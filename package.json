@@ -1,0 +1,28 @@
+{
+  "name": "plex-api-credentials",
+  "version": "1.0.0-alpha",
+  "description": "Credentials authentication for plex-api",
+  "main": "index.js",
+  "scripts": {
+    "test": "jshint index.js && jscs index.js && mocha test/*-test.js"
+  },
+  "keywords": [
+    "plex-api",
+    "plex",
+    "authentication",
+    "username",
+    "password"
+  ],
+  "author": "Phillip Johnsen <johphi@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "jscs": "^1.13.1",
+    "jshint": "^2.8.0",
+    "mocha": "^2.2.5",
+    "nock": "^2.9.1",
+    "sinon": "^1.15.4"
+  },
+  "dependencies": {
+    "request": "^2.60.0"
+  }
+}
