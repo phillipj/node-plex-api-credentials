@@ -15,6 +15,8 @@
   ],
   "author": "Phillip Johnsen <johphi@gmail.com>",
   "license": "MIT",
+  "repository": "git://github.com/phillipj/node-plex-api-credentials",
+  "bugs": "https://github.com/phillipj/node-plex-api-credentials/issues",
   "devDependencies": {
     "jscs": "^1.13.1",
     "jshint": "^2.8.0",
@@ -24,5 +26,12 @@
   },
   "dependencies": {
     "request": "^2.60.0"
-  }
+  },
+  "engines": {
+    "node": ">=0.10"
+  },
+  "files": [
+    "index.js",
+    "LICENSE"
+  ]
 }
