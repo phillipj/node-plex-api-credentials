@@ -36,10 +36,21 @@ userAndPass.on('token', function(token){
 });
 ```
 
+## Contributing
+
+Contributions are more than welcome! Create an issue describing what you want to do.
+If that feature is seen to fit this project, send a pull request with the changes accompanied by tests.
+
+## Changelog
+
+### v1.0.0
+
+Initial release. Pretty much extracted as was when the code once existed in the plex-api module itself.
+
 ## License
 (The MIT License)
 
-Copyright (c) 2015 Phillip Johnsen <johphi@gmail.com>
+Copyright (c) 2015 Phillip Johnsen &lt;johphi@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
