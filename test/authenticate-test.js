@@ -2,17 +2,26 @@
 
 var assert = require('assert');
 var sinon = require('sinon');
+var PlexAPI = require('plex-api');
 
 var server = require('./server');
 
 var credentials = require('../');
 
-describe('authenticate(apiOptions, callback)', function() {
+describe('authenticate(plexApi, callback)', function() {
 
     var instance;
+    var plexClient;
 
     beforeEach(function() {
         server.start();
+
+        plexClient = new PlexAPI({
+            hostname: 'localhost',
+            options: {
+                deviceName: 'My awesome Plex Controller'
+            }
+        });
 
         instance = credentials({
             username: 'foo',
@@ -26,22 +35,22 @@ describe('authenticate(apiOptions, callback)', function() {
         assert.equal(typeof(instance.authenticate), 'function');
     });
 
-    it('requires the plex-api options as first argument', function() {
+    it('requires the plex-api instance as first argument', function() {
         assert.throws(function() {
             instance.authenticate();
-        }, /First argument should be the plex-api options object$/);
+        }, /First argument should be the plex-api object/);
     });
 
     it('requires callback function as second argument', function() {
         assert.throws(function() {
-            instance.authenticate({});
+            instance.authenticate(plexClient);
         }, /Second argument should be a callback function to be called when authentication has finished$/);
     });
 
     describe('callback(err, token)', function() {
 
         it('calls function with null as err argument when succeeding', function(done) {
-            instance.authenticate({}, function(err) {
+            instance.authenticate(plexClient, function(err) {
                 assert.strictEqual(err, null);
                 done();
             });
@@ -50,7 +59,7 @@ describe('authenticate(apiOptions, callback)', function() {
         it('calls function with error object as err argument when error occurs', function(done) {
             server.fails();
 
-            instance.authenticate({}, function(err) {
+            instance.authenticate(plexClient, function(err) {
                 assert(err instanceof Error, 'error instance provided');
                 done();
             });
@@ -65,7 +74,7 @@ describe('authenticate(apiOptions, callback)', function() {
 
             instance.on('token', spy);
 
-            instance.authenticate({}, function() {
+            instance.authenticate(plexClient, function() {
                 assert(spy.calledOnce);
                 done();
             });
@@ -76,7 +85,7 @@ describe('authenticate(apiOptions, callback)', function() {
 
             instance.on('token', spy);
 
-            instance.authenticate({}, function() {
+            instance.authenticate(plexClient, function() {
                 var token = spy.firstCall.args[0];
                 assert.equal(token, 'pretend-to-be-token');
                 done();
@@ -92,34 +101,12 @@ describe('authenticate(apiOptions, callback)', function() {
 
             var scope = server.start({
                 reqheaders: {
-                    'Authorization': 'Basic Zm9vOmJhcg=='
+                    'Authorization': 'Basic Zm9vOmJhcg==',
+                    'X-Plex-Device-Name': 'My awesome Plex Controller'
                 }
             });
 
-            instance.authenticate({}, function() {
-                scope.done();
-                done();
-            });
-        });
-
-        it('overrides default options when specified', function(done) {
-            server.stop();
-
-            var scope = server.start({
-                reqheaders: {
-                    'X-Plex-Client-Identifier': 'mock-identifier',
-                    'X-Plex-Product'          : 'mock-product',
-                    'X-Plex-Version'          : 'mock-version',
-                    'X-Plex-Device'           : 'mock-device'
-                }
-            });
-
-            instance.authenticate({
-                identifier: 'mock-identifier',
-                product   : 'mock-product',
-                version   : 'mock-version',
-                device    : 'mock-device'
-            }, function() {
+            instance.authenticate(plexClient, function() {
                 scope.done();
                 done();
             });

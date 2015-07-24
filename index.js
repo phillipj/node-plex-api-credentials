@@ -3,6 +3,7 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var request = require('request');
+var headers = require('plex-api-headers');
 
 var rxAuthToken = /authenticationToken="([^"]+)"/;
 
@@ -14,32 +15,20 @@ function CredentialsAuthenticator(username, password) {
 }
 util.inherits(CredentialsAuthenticator, EventEmitter);
 
-CredentialsAuthenticator.prototype.authenticate = function authenticate(apiOptions, callback) {
-    if (typeof (apiOptions) !== 'object') {
-        throw new TypeError('First argument should be the plex-api options object');
+CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi, callback) {
+    if (typeof plexApi !== 'object') {
+        throw new TypeError('First argument should be the plex-api object to perform authentication for');
     }
-    if (typeof (callback) !== 'function') {
+    if (typeof callback !== 'function') {
         throw new TypeError('Second argument should be a callback function to be called when authentication has finished');
     }
 
-    this._requestSignIn(apiOptions, callback);
-};
-
-CredentialsAuthenticator.prototype._requestSignIn = function _requestSignIn(apiOptions, callback) {
     var self = this;
     var options = {
         url: 'https://plex.tv/users/sign_in.xml',
-        headers: {
-            'Authorization': authHeaderVal(this.username, this.password),
-            'X-Plex-Client-Identifier': apiOptions.identifier,
-            'X-Plex-Product': apiOptions.product,
-            'X-Plex-Version': apiOptions.version,
-            'X-Plex-Device': apiOptions.device,
-            'X-Plex-Device-Name': apiOptions.deviceName,
-            'X-Plex-Platform': apiOptions.platform,
-            'X-Plex-Platform-Version': apiOptions.platformVersion,
-            'X-Plex-Provides': 'controller'
-        }
+        headers: headers(plexApi, {
+            Authorization: authHeaderVal(this.username, this.password)
+        })
     };
 
     request.post(options, function(err, res, xmlBody) {

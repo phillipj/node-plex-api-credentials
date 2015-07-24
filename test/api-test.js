@@ -7,7 +7,7 @@ var credentials = require('../');
 describe('Credentials module API', function() {
 
     it('returns a function', function() {
-        assert.equal(typeof(credentials), 'function');
+        assert.equal(typeof credentials, 'function');
     });
 
     it('throws when called with invalid options object', function() {

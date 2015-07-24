@@ -22,9 +22,11 @@
     "jshint": "^2.8.0",
     "mocha": "^2.2.5",
     "nock": "^2.9.1",
+    "plex-api": "^3.0.0",
     "sinon": "^1.15.4"
   },
   "dependencies": {
+    "plex-api-headers": "^1.1.0",
     "request": "^2.60.0"
   },
   "engines": {
