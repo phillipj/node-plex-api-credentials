@@ -43,6 +43,11 @@ If that feature is seen to fit this project, send a pull request with the change
 
 ## Changelog
 
+### v2.0.0
+
+- Use plex-api-headers for generating X-Plex headers
+- Changed .authenticate(apiOptions) -> .authenticate(plexApi)
+
 ### v1.0.0
 
 Initial release. Pretty much extracted as was when the code once existed in the plex-api module itself.
