@@ -18,7 +18,7 @@
   "repository": "git://github.com/phillipj/node-plex-api-credentials",
   "bugs": "https://github.com/phillipj/node-plex-api-credentials/issues",
   "devDependencies": {
-    "jscs": "1.13.1",
+    "jscs": "2.3.0",
     "jshint": "2.8.0",
     "mocha": "2.3.3",
     "nock": "2.13.0",
