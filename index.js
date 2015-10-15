@@ -16,6 +16,9 @@ function CredentialsAuthenticator(username, password) {
 util.inherits(CredentialsAuthenticator, EventEmitter);
 
 CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi, callback) {
+    var self = this;
+    var options;
+
     if (typeof plexApi !== 'object') {
         throw new TypeError('First argument should be the plex-api object to perform authentication for');
     }
@@ -23,15 +26,16 @@ CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi,
         throw new TypeError('Second argument should be a callback function to be called when authentication has finished');
     }
 
-    var self = this;
-    var options = {
+    options = {
         url: 'https://plex.tv/users/sign_in.xml',
         headers: headers(plexApi, {
             Authorization: authHeaderVal(this.username, this.password)
         })
     };
 
-    request.post(options, function(err, res, xmlBody) {
+    request.post(options, function (err, res, xmlBody) {
+        var token;
+
         if (err) {
             return callback(new Error('Error while requesting https://plex.tv for authentication: ' + String(err)));
         }
@@ -39,7 +43,7 @@ CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi,
             return callback(new Error('Invalid status code in authentication response from Plex.tv, expected 201 but got ' + res.statusCode));
         }
 
-        var token = extractAuthToken(xmlBody);
+        token = extractAuthToken(xmlBody);
         if (!token) {
             return callback(new Error('Couldnt not find authentication token in response from Plex.tv :('));
         }
@@ -59,7 +63,7 @@ function authHeaderVal(username, password) {
     return 'Basic ' + buffer.toString('base64');
 }
 
-module.exports = function(options) {
+module.exports = function (options) {
     if (typeof (options) !== 'object') {
         throw new TypeError('An options object containing .username and .password is required');
     }
