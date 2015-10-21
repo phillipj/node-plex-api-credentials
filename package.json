@@ -23,7 +23,7 @@
     "mocha": "2.3.3",
     "nock": "2.15.0",
     "plex-api": "3.2.0",
-    "sinon": "1.17.1"
+    "sinon": "1.17.2"
   },
   "dependencies": {
     "plex-api-headers": "1.1.0",
