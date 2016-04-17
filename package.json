@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "plex-api-headers": "1.1.0",
-    "request": "2.71.0"
+    "request": "2.72.0"
   },
   "engines": {
     "node": ">=0.10"
