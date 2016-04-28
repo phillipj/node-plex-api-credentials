@@ -26,11 +26,13 @@
     "sinon": "^1.17.2"
   },
   "dependencies": {
+    "bluebird": "^3.3.5",
     "plex-api-headers": "1.1.0",
-    "request": "2.72.0"
+    "request-promise": "^3.0.0",
+    "xml2js": "^0.4.16"
   },
   "engines": {
-    "node": ">=0.10"
+    "node": ">=4.0"
   },
   "files": [
     "index.js",
