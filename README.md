@@ -10,7 +10,11 @@ var credentials = require('plex-api-credentials');
 
 var userAndPass = credentials({
     username: 'foo',
-    password: 'bar'
+    password: 'bar',
+    homeUser: {    // Required for Plex managed users
+    	name: "Family",
+    	pin: "1234" // Optional four digit pin code if user is protected
+    }
 });
 
 var client = new PlexAPI({
