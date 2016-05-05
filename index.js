@@ -45,6 +45,8 @@ CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi,
                 throw new Error('Couldnt not find authentication token in response from Plex.tv :(');
             }
 
+            self.emit('authToken', token);
+
             return token;
         })
         .catch(errors.StatusCodeError, err => {
@@ -66,8 +68,9 @@ CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi,
                     .then(extractAuthToken)
                     .then(token => getAccessToken({token : token, plexApi : plexApi}))
                     .then(accessToken => {
+                        self.emit('accessToken', accessToken);
                         self.emit('token', accessToken);
-                        return accessToken;
+                        return token;
                     });
             }
             self.emit('token', token);
