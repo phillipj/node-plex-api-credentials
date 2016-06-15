@@ -1,17 +1,21 @@
 'use strict';
 
 var EventEmitter = require('events').EventEmitter;
-var util = require('util');
-var request = require('request');
-var headers = require('plex-api-headers');
+var Promise      = require('bluebird');
+var util         = require('util');
+var request      = require('request-promise');
+var headers      = require('plex-api-headers');
+var parseString  = Promise.promisify(require('xml2js').parseString);
+var errors       = require('request-promise/errors');
 
 var rxAuthToken = /authenticationToken="([^"]+)"/;
 
-function CredentialsAuthenticator(username, password) {
+function CredentialsAuthenticator(options) {
     EventEmitter.call(this);
 
-    this.username = username;
-    this.password = password;
+    this.username = options.username;
+    this.password = options.password;
+    this.homeUser = options.managedUser;
 }
 util.inherits(CredentialsAuthenticator, EventEmitter);
 
@@ -33,25 +37,110 @@ CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi,
         })
     };
 
-    request.post(options, function (err, res, xmlBody) {
-        var token;
+    return request.post(options)
+        .then(xmlBody => {
+            let token = extractAuthToken(xmlBody);
 
-        if (err) {
-            return callback(new Error('Error while requesting https://plex.tv for authentication: ' + String(err)));
-        }
-        if (res.statusCode !== 201) {
-            return callback(new Error('Invalid status code in authentication response from Plex.tv, expected 201 but got ' + res.statusCode));
-        }
+            if (!token) {
+                throw new Error('Couldnt not find authentication token in response from Plex.tv :(');
+            }
 
-        token = extractAuthToken(xmlBody);
-        if (!token) {
-            return callback(new Error('Couldnt not find authentication token in response from Plex.tv :('));
-        }
+            self.emit('authToken', token);
 
-        self.emit('token', token);
-        callback(null, token);
-    });
+            return token;
+        })
+        .catch(errors.StatusCodeError, err => {
+            throw new Error('Invalid status code in authentication response from Plex.tv, expected 201 but got ' + err.statusCode);
+        })
+        .catch(errors.RequestError, err => {
+            throw new Error('Error while requesting https://plex.tv for authentication: ' + String(err));
+        })
+        .then(token => {
+            if (self.homeUser && self.homeUser.name) {
+                let plexContext = {
+                    plexApi : plexApi,
+                    token   : token
+                };
+
+                return getHomeUser(plexContext)
+                    .then(xml  => findUserByName(xml, self.homeUser.name))
+                    .then(user => switchUser(plexContext, user, self.homeUser.pin))
+                    .then(extractAuthToken)
+                    .then(token => getAccessToken({token : token, plexApi : plexApi}))
+                    .then(accessToken => {
+                        self.emit('accessToken', accessToken);
+                        self.emit('token', accessToken);
+                        return token;
+                    });
+            }
+            self.emit('token', token);
+            return token;
+        })
+        .asCallback(callback);
 };
+
+function getHomeUser(plexContext) {
+    return request.get(createRequestOpts(plexContext, 'https://plex.tv/api/home/users'));
+}
+
+function createRequestOpts(plexContext, url) {
+    return {
+        url     : url,
+        headers : headers(plexContext.plexApi, { 'X-Plex-Token': plexContext.token })
+    };
+}
+
+function getAccessToken(plexContext, callback) {
+    return request.get(createRequestOpts(plexContext, 'https://plex.tv/api/resources?includeHttps=1'))
+        .then(parseString)
+        .then(extractAccessToken);
+}
+
+function extractAccessToken(result) {
+    let token = null;
+    let hasDevices = result.MediaContainer.Device && result.MediaContainer.Device.some(device => {
+        token = device.$.accessToken;
+        return true;
+    });
+
+    if (hasDevices) {
+        return token;
+    }
+
+    throw new Error('Couldn\'t find any devices this managed user has access to');
+}
+
+function switchUser(plexContext, user, pin, callback) {
+    let url = 'https://plex.tv/api/home/users/' + user.id + '/switch?' + (user.protected && pin  ? ('pin=' + pin) : '');
+    return request.post(createRequestOpts(plexContext, url));
+}
+
+function findUserByName(xml, homeUser) {
+    return parseString(xml)
+        .then(result => {
+            let foundUser = {
+                protected : false,
+                name      : null,
+                id        : null
+            };
+
+            let found = result.MediaContainer.User.some((user) => {
+                if (user.$.title.toLocaleLowerCase() == homeUser.toLocaleLowerCase()) {
+                    foundUser.id        = user.$.id;
+                    foundUser.name      = user.$.title;
+                    foundUser.protected = user.$.protected === '1';
+                    return true;
+                }
+                return false;
+            });
+
+            if (found) {
+                return foundUser;
+            }
+
+            throw new Error('Home user ' + homeUser + ' not found');
+        });
+}
 
 function extractAuthToken(xmlBody) {
     return xmlBody.match(rxAuthToken)[1];
@@ -73,5 +162,5 @@ module.exports = function (options) {
     if (typeof (options.password) !== 'string') {
         throw new TypeError('Options object requires a .password property as a string');
     }
-    return new CredentialsAuthenticator(options.username, options.password);
+    return new CredentialsAuthenticator(options);
 };
