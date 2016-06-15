@@ -15,7 +15,7 @@ function CredentialsAuthenticator(options) {
 
     this.username = options.username;
     this.password = options.password;
-    this.homeUser = options.homeUser;
+    this.homeUser = options.managedUser;
 }
 util.inherits(CredentialsAuthenticator, EventEmitter);
 
@@ -107,7 +107,7 @@ function extractAccessToken(result) {
         return token;
     }
 
-    throw new Error('No devices available to extractAccessToken from');
+    throw new Error('Couldn\'t find any devices this managed user has access to');
 }
 
 function switchUser(plexContext, user, pin, callback) {
