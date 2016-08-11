@@ -5,8 +5,8 @@ var nock = require('nock');
 
 var respondWith;
 
-function respondWithSignInXml(cb) {
-    fs.readFile(__dirname + '/fixtures/sign_in.xml', function onReadSignIn(err, data) {
+function respondWithFixture(fixtureFilename, cb) {
+    fs.readFile(`${__dirname}/fixtures/${fixtureFilename}`, function onReadSignIn(err, data) {
         if (err) {
             return cb(err);
         }
@@ -15,27 +15,42 @@ function respondWithSignInXml(cb) {
 }
 
 module.exports = {
-    start: function start(options) {
+    start(options) {
         options = options || {};
 
         return nock('https://plex.tv', {
                     reqheaders: options.reqheaders
                 })
                 .post('/users/sign_in.xml')
-                .reply(function(uri, requestBody, cb) {
+                .reply((uri, requestBody, cb) => {
                     if (respondWith === 'failure') {
                         return cb(null, [500]);
                     }
-                    respondWithSignInXml(cb);
+                    respondWithFixture('sign_in.xml', cb);
                 });
     },
 
-    stop: function stop() {
+    stop() {
         respondWith = undefined;
         nock.cleanAll();
     },
 
-    fails: function fails() {
+    fails() {
         respondWith = 'failure';
+    },
+
+    expectManagedUserRequest() {
+        return nock('https://plex.tv')
+                .get('/api/home/users')
+                .reply((uri, requestBody, cb) => {
+                    if (respondWith === 'failure') {
+                        return cb(null, [500]);
+                    }
+                    respondWithFixture('managed_users.xml', cb);
+                })
+                .post('/api/home/users/4321/switch?')
+                .reply((uri, requestBody, cb) => respondWithFixture('switch_user.xml', cb))
+                .get('/api/resources?includeHttps=1')
+                .reply((uri, requestBody, cb) => respondWithFixture('fetch_access_token.xml', cb));
     }
 };

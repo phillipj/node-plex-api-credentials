@@ -15,12 +15,11 @@ function CredentialsAuthenticator(options) {
 
     this.username = options.username;
     this.password = options.password;
-    this.homeUser = options.managedUser;
+    this.managedUser = options.managedUser;
 }
 util.inherits(CredentialsAuthenticator, EventEmitter);
 
 CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi, callback) {
-    var self = this;
     var options;
 
     if (typeof plexApi !== 'object') {
@@ -45,8 +44,7 @@ CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi,
                 throw new Error('Couldnt not find authentication token in response from Plex.tv :(');
             }
 
-            self.emit('authToken', token);
-
+            this.emit('token', token);
             return token;
         })
         .catch(errors.StatusCodeError, err => {
@@ -55,31 +53,30 @@ CredentialsAuthenticator.prototype.authenticate = function authenticate(plexApi,
         .catch(errors.RequestError, err => {
             throw new Error('Error while requesting https://plex.tv for authentication: ' + String(err));
         })
-        .then(token => {
-            if (self.homeUser && self.homeUser.name) {
-                let plexContext = {
-                    plexApi : plexApi,
-                    token   : token
-                };
-
-                return getHomeUser(plexContext)
-                    .then(xml  => findUserByName(xml, self.homeUser.name))
-                    .then(user => switchUser(plexContext, user, self.homeUser.pin))
-                    .then(extractAuthToken)
-                    .then(token => getAccessToken({token : token, plexApi : plexApi}))
-                    .then(accessToken => {
-                        self.emit('accessToken', accessToken);
-                        self.emit('token', accessToken);
-                        return token;
-                    });
+        .then(mainAuthToken => {
+            // 'mainAuthToken' represents access token for main PlexHome user,
+            // check whether or not we need to fetch token of managed user instead
+            const hasManagedUserInfo = !!this.managedUser && !!this.managedUser.name;
+            if (!hasManagedUserInfo) {
+                return mainAuthToken;
             }
-            self.emit('token', token);
-            return token;
+
+            let plexContext = { plexApi, token: mainAuthToken };
+
+            return fetchHomeUsersXml(plexContext)
+                .then(xml  => findUserByName(xml, this.managedUser.name))
+                .then(user => switchUser(plexContext, user, this.managedUser.pin))
+                .then(extractAuthToken)
+                .then(managedAuthToken => fetchAccessToken({ plexApi, token: managedAuthToken }))
+                .then(managedAccessToken => {
+                    this.emit('token', managedAccessToken);
+                    return managedAccessToken;
+                });
         })
         .asCallback(callback);
 };
 
-function getHomeUser(plexContext) {
+function fetchHomeUsersXml(plexContext) {
     return request.get(createRequestOpts(plexContext, 'https://plex.tv/api/home/users'));
 }
 
@@ -90,7 +87,7 @@ function createRequestOpts(plexContext, url) {
     };
 }
 
-function getAccessToken(plexContext, callback) {
+function fetchAccessToken(plexContext, callback) {
     return request.get(createRequestOpts(plexContext, 'https://plex.tv/api/resources?includeHttps=1'))
         .then(parseString)
         .then(extractAccessToken);
@@ -117,14 +114,14 @@ function switchUser(plexContext, user, pin, callback) {
 
 function findUserByName(xml, homeUser) {
     return parseString(xml)
-        .then(result => {
+        .then(xmlResult => {
             let foundUser = {
                 protected : false,
                 name      : null,
                 id        : null
             };
 
-            let found = result.MediaContainer.User.some((user) => {
+            let found = xmlResult.MediaContainer.User.some((user) => {
                 if (user.$.title.toLocaleLowerCase() == homeUser.toLocaleLowerCase()) {
                     foundUser.id        = user.$.id;
                     foundUser.name      = user.$.title;

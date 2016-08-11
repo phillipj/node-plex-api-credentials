@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MediaContainer size="1">
+  <Device name="Phillip’s MacBook Pro" product="Plex Media Server" productVersion="0.9.16.6.1993-5089475" platform="MacOSX" platformVersion="10.11.1" device="Mac" clientIdentifier="3bc1590a752185f8de143" createdAt="1465075711" lastSeenAt="1475518788" provides="server" owned="0" httpsRequired="0" ownerId="1234" home="1" accessToken="pretend-to-be-managed-token" sourceTitle="phillipj" synced="0" relay="1" publicAddressMatches="1" presence="1">
+    <Connection protocol="https" address="192.168.1.64" port="32400" uri="https://192-168-1-64.d5c8ac9fc91b5.plex.direct:32400" local="1"/>
+  </Device>
+</MediaContainer>

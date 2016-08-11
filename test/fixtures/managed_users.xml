@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MediaContainer friendlyName="myPlex" identifier="com.plexapp.plugins.myplex" machineIdentifier="f10c46851d227b52cdbbea3f3ec3f1c90e4bc" totalSize="6" size="6" guestUserID="9557154">
+  <User id="1234" uuid="80053d6ea6f7b758" admin="1" guest="0" restricted="0" protected="1" title="phillipj" username="phillipj" email="phony-email@gmail.com" thumb="https://plex.tv/users/80053d6ea67b758/avatar"/>
+  <User id="4321" uuid="bab38cb8852916f" admin="0" guest="0" restricted="1" protected="0" title="OnlyPhotos" username="" email="" thumb="https://plex.tv/users/bab38cb85852916f/avatar"/>
+</MediaContainer>

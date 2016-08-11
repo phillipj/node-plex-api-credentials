@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user email="" id="4321" uuid="bab38cb8852916f" mailing_list_status="" thumb="https://plex.tv/users/bab38cb88916f/avatar" username="" title="OnlyPhotos" cloudSyncDevice="" locale="" authenticationToken="mZRp3avA" authToken="mZRp3avA" scrobbleTypes="" restricted="1" home="1" guest="0" homeSize="6" secure="1" certificateVersion="2">
+  <entitlements all="1">
+    <entitlement id="roku"/>
+    <entitlement id="android"/>
+    <entitlement id="xbox_one"/>
+    <entitlement id="xbox_360"/>
+    <entitlement id="windows"/>
+    <entitlement id="windows_phone"/>
+    <entitlement id="ios"/>
+  </entitlements>
+  <profile_settings auto_select_audio="1" auto_select_subtitle="1" default_audio_language="" default_subtitle_language=""/>
+  <username/>
+  <email/>
+  <joined-at type="datetime">2016-06-15 19:26:51 UTC</joined-at>
+  <authentication-token>mZRp3gavA</authentication-token>
+</user>
