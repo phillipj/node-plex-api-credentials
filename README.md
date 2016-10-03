@@ -2,22 +2,31 @@
 
 [plex-api](https://www.npmjs.com/package/plex-api) authenticator module which provides PlexHome credentials authentication.
 
+*It's usually not required to install and handle this package explicitly, as username/password/managed user credentials
+can be specified when creating an plex-api client.*
+
 ## Usage
 
-```js
-var PlexAPI = require('plex-api');
-var credentials = require('plex-api-credentials');
+```bash
+$ npm install plex-api-credentials --save
+```
 
-var userAndPass = credentials({
-    username: 'foo',
-    password: 'bar',
+Then provide the plex-api-credentials object to the plex-api client upon creation:
+
+```js
+const PlexAPI = require('plex-api');
+const credentials = require('plex-api-credentials');
+
+const userAndPass = credentials({
+    username: 'MainParentUser',
+    password: 'aSecretPassword',
     managedUser: {    // Required for Plex managed users
-        name: "Family",
-        pin: "1234" // Optional four digit pin code if user is protected
+        name: 'RestrictedFamilyMember',
+        pin: '1234' // Optional four digit pin code if user is protected
     }
 });
 
-var client = new PlexAPI({
+const client = new PlexAPI({
     hostname: '192.168.0.1',
     authenticator: userAndPass
 });
@@ -72,7 +81,7 @@ Initial release. Pretty much extracted as was when the code once existed in the 
 ## License
 (The MIT License)
 
-Copyright (c) 2015 Phillip Johnsen &lt;johphi@gmail.com&gt;
+Copyright (c) 2015-2016 Phillip Johnsen &lt;johphi@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
