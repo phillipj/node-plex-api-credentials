@@ -45,6 +45,19 @@ userAndPass.on('token', function(token){
 Contributions are more than welcome! Create an issue describing what you want to do.
 If that feature is seen to fit this project, send a pull request with the changes accompanied by tests.
 
+### Running tests
+
+```bash
+$ npm install
+$ npm test
+```
+
+To run all tests as soon as files or tests has been changed:
+
+```bash
+$ npm run test:watch
+```
+
 ## Changelog
 
 ### v2.0.0
