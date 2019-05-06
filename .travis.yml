@@ -7,3 +7,12 @@ node_js:
   - lts/*
   - 12
   - node
+deploy:
+  provider: npm
+  email: johphi@gmail.com
+  tag: next
+  api_key:
+    secure: Mgz4gLmj2xLoxaYoUZQc/+1sOXrXgm7/XJGW+mlbJgX3GDGmS69yUWXzq8/Ue+qMRDCtE+rVRiajL6CreIblZtNHlZ/zIXB5u+cQQ6XzpdL5rwNTBbDuk4JbFXg/6LBrEoQvbCzdvSBl2ocU+2bs/6kjmmoSjQ5dRyoaRQljC19rOwKc/BKSnynEQ2PUmBoKEIayUZJGwAzYBjlNMHDaiaLi4wVFDEAwG5mw0WqQE0OKIcLOKNYDhkoPvVANqAbItmw38Rx1AkBtfXkLfAQlYVHNXeGCdFdDC+BqCm6q66HeQrYBzeNV9B/NCLe8w3pTcxzIQbHe8xQCELL2yY0jcb81P4RqadfYO703JNh+2ietBlXaqwWez8LSlI4HDFkwr0FSvZSf1+b4ek7wrgFnkem97lHOp3BZu+BIbLBvtCJquSc6ExLW4dNSdqdV6RLorL21+6KuYRHkWpPOqdnZZTYhd+Gidlyj9bNWurzsa1rHS+nbCgD0edViwtZBmEMf4Zfv2qviN717+EI+qNZsDNIzLaSuvraZlrSSVQd3dNJQGiv4OZv/rgEjKiVywY5YDrF8rezBLnV7WFa3Eg9QGOfP7naGc00TBsUCyItKBieng0w5AsrzPIddfjnedD4CjFNegcnfZ9ih3+o7OZdxxeziH7+GpXdn8JAvHSl0J9Y=
+  on:
+    repo: phillipj/node-plex-api-credentials
+    branch: master
