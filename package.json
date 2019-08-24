@@ -20,17 +20,17 @@
   "bugs": "https://github.com/phillipj/node-plex-api-credentials/issues",
   "devDependencies": {
     "jscs": "^3.0.0",
-    "jshint": "^2.8.0",
-    "mocha": "^2.5.0",
-    "nock": "^8.0.0",
+    "jshint": "2.10.2",
+    "mocha": "5.2.0",
+    "nock": "9.6.1",
     "plex-api": "5.2.2",
     "sinon": "^1.17.2"
   },
   "dependencies": {
     "bluebird": "^3.3.5",
     "plex-api-headers": "1.1.0",
-    "request-promise": "^3.0.0",
-    "xml2js": "^0.4.16"
+    "request-promise": "4.2.4",
+    "xml2js": "0.4.19"
   },
   "engines": {
     "node": ">=4.0"
