@@ -10,6 +10,9 @@ var errors       = require('request-promise/errors');
 
 var rxAuthToken = /authenticationToken="([^"]+)"/;
 
+// creds to https://github.com/mafintosh/to-buffer for knowing when Buffer.from() is available (Node 5 & above)
+var makeBuffer = Buffer.from && Buffer.from !== Uint8Array.from ? Buffer.from : createBufferForNode4AndBelow;
+
 function CredentialsAuthenticator(options) {
     EventEmitter.call(this);
 
@@ -143,9 +146,13 @@ function extractAuthToken(xmlBody) {
     return xmlBody.match(rxAuthToken)[1];
 }
 
+function createBufferForNode4AndBelow(buf, enc) {
+    return new Buffer(buf, enc);
+}
+
 function authHeaderVal(username, password) {
     var authString = username + ':' + password;
-    var buffer = new Buffer(authString.toString(), 'binary');
+    var buffer = makeBuffer(authString.toString(), 'binary');
     return 'Basic ' + buffer.toString('base64');
 }
 
