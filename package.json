@@ -23,7 +23,7 @@
     "jshint": "2.10.2",
     "mocha": "5.2.0",
     "nock": "9.6.1",
-    "plex-api": "5.2.2",
+    "plex-api": "5.2.5",
     "sinon": "^1.17.2"
   },
   "dependencies": {
