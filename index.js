@@ -90,7 +90,7 @@ function createRequestOpts(plexContext, url) {
     };
 }
 
-function fetchAccessToken(plexContext, callback) {
+function fetchAccessToken(plexContext) {
     return request.get(createRequestOpts(plexContext, 'https://plex.tv/api/resources?includeHttps=1'))
         .then(parseString)
         .then(extractAccessToken);
@@ -110,7 +110,7 @@ function extractAccessToken(result) {
     throw new Error('Couldn\'t find any devices this managed user has access to');
 }
 
-function switchUser(plexContext, user, pin, callback) {
+function switchUser(plexContext, user, pin) {
     let url = 'https://plex.tv/api/home/users/' + user.id + '/switch?' + (user.protected && pin  ? ('pin=' + pin) : '');
     return request.post(createRequestOpts(plexContext, url));
 }
