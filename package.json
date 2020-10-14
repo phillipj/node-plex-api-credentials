@@ -1,6 +1,6 @@
 {
   "name": "plex-api-credentials",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Credentials authentication for plex-api",
   "main": "index.js",
   "scripts": {
