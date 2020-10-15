@@ -67,27 +67,6 @@ To run all tests as soon as files or tests has been changed:
 $ npm run test:watch
 ```
 
-## Changelog
-
-### v3.0.0
-
-- Support for managed users by [@hyperlink](https://github.com/hyperlink)
-
-**BREAKING CHANGES:**
-- Requires at least Node.js v4.0
-- `constructor(username, password)` -> `constructor(options)` <br>
-    Previously the constructor accepted two simple string arguments,
-        this has been changed to accepting a complex options object.
-
-### v2.0.0
-
-- Use plex-api-headers for generating X-Plex headers
-- Changed .authenticate(apiOptions) -> .authenticate(plexApi)
-
-### v1.0.0
-
-Initial release. Pretty much extracted as was when the code once existed in the plex-api module itself.
-
 ## License
 (The MIT License)
 
