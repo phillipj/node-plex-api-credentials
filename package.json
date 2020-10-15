@@ -26,7 +26,7 @@
     "@semantic-release/npm": "github:phillipj/npm#enable-automation-tokens-version-hack",
     "@semantic-release/release-notes-generator": "^9.0.1",
     "eslint": "^7.11.0",
-    "mocha": "5.2.0",
+    "mocha": "^8.1.3",
     "nock": "9.6.1",
     "plex-api": "5.2.5",
     "semantic-release": "^17.2.1",
